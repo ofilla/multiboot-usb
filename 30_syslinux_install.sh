@@ -11,3 +11,10 @@ umount /mnt
 
 echo 'installing syslinux'
 syslinux -ir -d boot/syslinux ${DEV}1
+
+echo 'installing MBR'
+mount ${DEV}1 /mnt
+dd conv=notrunc bs=440 count=1 if=/mnt/boot/syslinux/mbr/mbr.bin of=$DEV
+umount /mnt
+
+sync
