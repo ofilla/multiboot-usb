@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DEV="${ARGV[0]}"
+
 if [[ "$DEV" == "" ]]; then
    echo "no destination device"
    exit 1
