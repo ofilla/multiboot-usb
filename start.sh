@@ -6,6 +6,8 @@ if [[ -z "$ARGV" ]]; then
 fi
 
 export ARGV
+MOUNTPOINT=/mnt
+export MOUNTPOINT
 
 for file in $(ls ??_*.sh); do
     source $file
