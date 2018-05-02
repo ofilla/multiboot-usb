@@ -12,7 +12,7 @@ function use_isolinux_config()
 
     # default config
     if [[ -f "$DIR/txt.cfg" ]]; then
-	echo "  menu configuration found: txt.cfg"
+	echo "  menu configuration found"
     else
  	# nesseccary
 	echo "  file 'txt.cfg' does not exist!" >& 2
@@ -35,27 +35,52 @@ EOF
     
     cfgfile="$CONFIGDIR/$NAME.cfg"
     cat <<EOF > $cfgfile
-INCLUDE /boot/syslinux/config/stdmenu.cfg
+# from directory: /boot/kali_linux_mini
 
-# directory: /boot/$NAME
-
-# include txt.cfg
 $(cat $DIR/txt.cfg)
 
-MENU BEGIN advanced
-  # include adtxt.cfg
+MENU BEGIN ${NAME}_advanced
+$(cat $DIR/adtxt.cfg | sed 's/^/  /g')
+
 $(cat $DIR/rqtxt.cfg | sed 's/^/  /g')
 
-  # include rqtxt.cfg
-$(cat $DIR/rqtxt.cfg | sed 's/^/  /g')
-
-  # back
   LABEL mainmenu
     MENU LABEL ^Back..
     MENU EXIT
 MENU END
+
+# from directory: /boot/kali_linux_mini
 EOF
 
+    # replace tabs with double spaces
+    sed -i 's/\t/  /g' $cfgfile
+    
+    # write keywords uppercase
+    for keyword in include label menu kernel append initrd
+    do
+	sed -i "s/ $keyword / ${keyword^^} /g" $cfgfile
+	sed -i "s/^$keyword /${keyword^^} /g" $cfgfile
+    done
+
+    # do not include these files - delete all references
+    for filename in isolinux.cfg menu.cfg txt.cfg adtxt.cfg rqtxt.cfg
+    do
+	sed -i "/[ /]$filename/g" $cfgfile
+    done
+
+    # labels must be unique => give them a prefix ...
+    sed -i "s/ LABEL / LABEL ${NAME}_/g" $cfgfile
+    sed -i "s/^LABEL /LABEL ${NAME}_/g" $cfgfile
+    # ... but not menu labels
+    sed -i "s/MENU LABEL ${NAME}_/MENU LABEL /g" $cfgfile
+
+    # fix paths
+    for expression in 'KERNEL ' 'INITRD ' 'initrd='
+    do
+	sed -i "s!$expression!${expression}/boot/$NAME/!g" $cfgfile
+    done
+    
+    
     cat <<EOF
 
 
@@ -90,6 +115,8 @@ EOF
 
 echo 'reset menufile'
 echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
+
+rename 's/[ -]/_/g' $MOUNTPOINT/boot/*
 
 for DIR in $(ls -d $MOUNTPOINT/boot/*/ | grep -v 'syslinux/$')
 do
