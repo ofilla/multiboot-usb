@@ -2,6 +2,7 @@
 
 INCLUDEDIR="/boot/syslinux/config"
 CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
+menufilename="load_submenus.cfg"
 menufile="$CONFIGDIR/load_submenus.cfg"
 
 function use_isolinux_config()
@@ -61,6 +62,17 @@ EOF
 
     
 }
+
+cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
+PATH /boot/syslinux/modules/bios /boot/syslinux/modules/efi32 /boot/syslinux/modules/efi64
+UI vesamenu.c32
+
+MENU TITLE Multiboot-USB
+
+INCLUDE $INCLUDEDIR/stdmenu.cfg
+INCLUDE $INCLUDEDIR/$menufilename
+INCLUDE $INCLUDEDIR/powermenu.cfg
+EOF
 
 echo 'reset menufile'
 echo -n '' > $menufile
