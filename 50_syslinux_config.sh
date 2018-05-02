@@ -21,9 +21,7 @@ function use_isolinux_config()
     fi
 
     NAME_HUMAN_READABLE=$( echo $NAME | sed -e 's/[^ _-]*/\u&/g' -e 's/[_-]/ /g' )
-    echo '    create entry in menufile'
     cat <<EOF >> $menufile
-INCLUDE $INCLUDEDIR/stdmenu.cfg
 MENU BEGIN $NAME
 #todo: isolinux_menu - txt.cfg: set CWD / right paths
   MENU LABEL ^$NAME_HUMAN_READABLE
@@ -35,12 +33,28 @@ MENU BEGIN $NAME
 MENU END
 EOF
     
-    echo '    create cfgfile'
     cfgfile="$CONFIGDIR/$NAME.cfg"
-    echo -e "PATH /boot/${NAME}\n" > $cfgfile
-    cat $DIR/txt.cfg >> $cfgfile
+    cat <<EOF > $cfgfile
+INCLUDE /boot/syslinux/config/stdmenu.cfg
 
-    
+# directory: /boot/$NAME
+
+# include txt.cfg
+$(cat $DIR/txt.cfg)
+
+MENU BEGIN advanced
+  # include adtxt.cfg
+$(cat $DIR/rqtxt.cfg | sed 's/^/  /g')
+
+  # include rqtxt.cfg
+$(cat $DIR/rqtxt.cfg | sed 's/^/  /g')
+
+  # back
+  LABEL mainmenu
+    MENU LABEL ^Back..
+    MENU EXIT
+MENU END
+EOF
 
     cat <<EOF
 
@@ -64,7 +78,7 @@ EOF
 }
 
 cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
-PATH /boot/syslinux/modules/bios /boot/syslinux/modules/efi32 /boot/syslinux/modules/efi64
+PATH /boot/syslinux/modules/bios
 UI vesamenu.c32
 
 MENU TITLE Multiboot-USB
@@ -75,7 +89,7 @@ INCLUDE $INCLUDEDIR/powermenu.cfg
 EOF
 
 echo 'reset menufile'
-echo -n '' > $menufile
+echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
 
 for DIR in $(ls -d $MOUNTPOINT/boot/*/ | grep -v 'syslinux/$')
 do
@@ -83,8 +97,6 @@ do
     if [[ -e $filename ]]; then
 	echo "$filename found"
 
-	cd $DIR
 	use_isolinux_config $DIR
-	cd - > /dev/null
     fi
 done
