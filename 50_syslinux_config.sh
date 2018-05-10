@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 INCLUDEDIR="/boot/syslinux/config"
@@ -5,104 +6,85 @@ CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
 menufilename="load_submenus.cfg"
 menufile="$CONFIGDIR/load_submenus.cfg"
 
-function use_isolinux_config()
-{
-    DIR=$1
-    NAME=$(basename $DIR)
-
-    # default config
-    if [[ -f "$DIR/txt.cfg" ]]; then
-	echo "  menu configuration found"
-    else
- 	# nesseccary
-	echo "  file 'txt.cfg' does not exist!" >& 2
-	echo "  this file is neccessary for configuration!" >& 2
-	exit 3
-    fi
-
-    NAME_HUMAN_READABLE=$( echo $NAME | sed -e 's/[^ _-]*/\u&/g' -e 's/[_-]/ /g' )
-    cat <<EOF >> $menufile
-MENU BEGIN $NAME
-#todo: isolinux_menu - txt.cfg: set CWD / right paths
-  MENU LABEL ^$NAME_HUMAN_READABLE
-  INCLUDE $INCLUDEDIR/stdmenu.cfg
-  INCLUDE $INCLUDEDIR/${NAME}.cfg
-  LABEL mainmenu
-    MENU LABEL ^Back
-    MENU EXIT
-MENU END
-EOF
+function backup_original_config() {
+    # VARIABLES MOUNTPOINT AND file MUST BE SET!
     
-    cfgfile="$CONFIGDIR/$NAME.cfg"
-    cat <<EOF > $cfgfile
-# from directory: /boot/kali_linux_mini
-
-$(cat $DIR/txt.cfg)
-
-MENU BEGIN ${NAME}_advanced
-$(cat $DIR/adtxt.cfg | sed 's/^/  /g')
-
-$(cat $DIR/rqtxt.cfg | sed 's/^/  /g')
-
-  LABEL mainmenu
-    MENU LABEL ^Back..
-    MENU EXIT
-MENU END
-
-# from directory: /boot/kali_linux_mini
-EOF
-
-    # replace tabs with double spaces
-    sed -i 's/\t/  /g' $cfgfile
+    # copy original config files for isolinux
+    # if files exist
     
-    # write keywords uppercase
-    for keyword in include label menu kernel append initrd
+    dir=$(dirname $MOUNTPOINT/boot/$file)
+    bkpdir="$dir/.cfg_bkp"
+
+    mkdir -p $bkpdir
+
+    for cfgfile in $dir/*.cfg
     do
-	sed -i "s/ $keyword / ${keyword^^} /g" $cfgfile
-	sed -i "s/^$keyword /${keyword^^} /g" $cfgfile
+    	cp -n $cfgfile $bkpdir/$(basename $cfgfile).bkp
     done
-
-    # do not include these files - delete all references
-    for filename in isolinux.cfg menu.cfg txt.cfg adtxt.cfg rqtxt.cfg
-    do
-	sed -i "/[ /]$filename/g" $cfgfile
-    done
-
-    # labels must be unique => give them a prefix ...
-    sed -i "s/ LABEL / LABEL ${NAME}_/g" $cfgfile
-    sed -i "s/^LABEL /LABEL ${NAME}_/g" $cfgfile
-    # ... but not menu labels
-    sed -i "s/MENU LABEL ${NAME}_/MENU LABEL /g" $cfgfile
-
-    # fix paths
-    for expression in 'KERNEL ' 'INITRD ' 'initrd='
-    do
-	sed -i "s!$expression!${expression}/boot/$NAME/!g" $cfgfile
-    done
-    
-    
-    cat <<EOF
-
-
-ToDo:
-  * create adv. options menu (below)
-  * fix path (above, see #todo
-  * create load_configs.cfg file, to load the here-created cfg file
-NOT IMPLEMENTED!!!
-EOF
-    exit 5
-    
-    # advanced options
-    if [[ -f "$DIR/adtxt.cfg" ]]; then
-	echo "  advanced configuration found: adtxt.cfg"
-    else
-	echo "  no advanced configuration found: adtxt.cfg"
-    fi
-
-    
 }
 
-cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
+function load_isolinux_config() {
+    NAME=$(basename "$ROOTDIR")
+    NAME_HUMAN_READABLE=$(sed -e 's/[_-]/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
+
+    cat >> $menufile <<EOF
+LABEL $NAME
+  MENU LABEL $NAME_HUMAN_READABLE
+  CONFIG /boot/$file
+  APPEND $ROOTDIR
+
+EOF
+
+    export CFGPATH=$(dirname $file)
+    export rootdir=$(dirname $CFGPATH | sed "s!$MOUNTPOINT!!")
+    
+    for cfgfile in $MOUNTPOINT/boot/$CFGPATH/*.cfg
+    do
+	manipulate_config_file $cfgfile
+    done
+}
+
+function manipulate_config_file() {
+    f=$1
+    # use backup of original cfg file as source
+    backed_up="$(dirname $f)/.cfg_bkp/$(basename $f).bkp"
+    cp -f $backed_up $f
+    
+    write_keywords_uppercase $f
+    fix_global_paths $f
+    fix_local_paths_for_include $f
+}
+
+function write_keywords_uppercase() {
+    for s in ui path default label kernel append include localboot 'menu begin' 'menu end' 'menu title' menu 'text help' endtext
+    do
+    	sed -i "s/^$s /${s^^} /g" $f
+    	sed -i "s/ $s / ${s^^} /g" $f
+    done
+}
+
+function fix_global_paths() {
+    for s in ' ' '\t' '='
+    do
+	sed -i "s!$s/!$s$ROOTDIR/!g" $f
+    done
+}
+
+function fix_local_paths_for_include() {
+    relative_cfgpath=$(sed "s!^$ROOTDIR!!g" <<< "/boot/$CFGPATH")
+
+    if [[ -n $relative_cfgpath ]]
+    then
+	# relative cfgpath is not empty
+	sed -i "s!INCLUDE !INCLUDE $ROOTDIR$relative_cfgpath/!g" $f
+	sed -i "s!UI !UI $ROOTDIR$relative_cfgpath/!g" $f
+	sed -i "s!PATH !PATH $ROOTDIR$relative_cfgpath!g" $f
+	sed -i "s!gfxboot !gfxboot $ROOTDIR$relative_cfgpath/!g" $f
+    fi
+}
+
+function reset_menufile() {
+    cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
 PATH /boot/syslinux/modules/bios
 UI vesamenu.c32
 
@@ -113,17 +95,30 @@ INCLUDE $INCLUDEDIR/$menufilename
 INCLUDE $INCLUDEDIR/powermenu.cfg
 EOF
 
-echo 'reset menufile'
-echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
+    echo 'reset menufile'
+    echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
+}
 
-rename 's/[ -]/_/g' $MOUNTPOINT/boot/*
 
-for DIR in $(ls -d $MOUNTPOINT/boot/*/ | grep -v 'syslinux/$')
+
+
+mount ${DEV}1 $MOUNTPOINT
+
+reset_menufile
+
+for ROOTDIR in $(find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$')
 do
-    filename="${DIR}isolinux.cfg"
-    if [[ -e $filename ]]; then
-	echo "$filename found"
+    FILENAME=isolinux.cfg
+    export ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
+    for file in $(find $MOUNTPOINT$ROOTDIR -type f -name $FILENAME -print)
+    do
+	export file=$(sed "s!^$MOUNTPOINT/boot/!!" <<< $file)
+    	echo "found $file"
 
-	use_isolinux_config $DIR
-    fi
+	backup_original_config
+    	load_isolinux_config
+    done
 done
+
+sync
+umount -l ${DEV}1
