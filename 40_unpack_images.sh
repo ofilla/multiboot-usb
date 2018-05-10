@@ -18,7 +18,7 @@ do
     
     mount -t iso9660 -o ro $iso $iso_mountpoint
     echo "  copying ..."
-    cp -Lr $iso_mountpoint/* $iso_mountpoint/.??* $MOUNTPOINT/boot/$dirname/
+    cp -Pr $iso_mountpoint/* $iso_mountpoint/.??* $MOUNTPOINT/boot/$dirname/
     umount -lf $iso_mountpoint
 
     echo " copied to $dirname"
