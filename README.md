@@ -13,3 +13,4 @@ Create a multiboot USB stick.
 ## tested with
 
 * **kali-linux-mini.iso**: kali linux netinstall image
+* **plpbt.iso**: Plop Boot Manager
