@@ -13,22 +13,54 @@ function load_isolinux_config() {
     cat >> $menufile <<EOF
 LABEL $NAME
   MENU LABEL $NAME_HUMAN_READABLE
-  CONFIG $ROOTDIR/$FILENAME
+  CONFIG /boot/$file
   APPEND $ROOTDIR
 
 EOF
 
-    CFGPATH=$(dirname $file)
-
-    for f in $MOUNTPOINT/boot/$CFGPATH/*.cfg
+    export CFGPATH=$(dirname $file)
+    export rootdir=$(dirname $CFGPATH | sed "s!$MOUNTPOINT!!")
+    
+    for cfgfile in $MOUNTPOINT/boot/$CFGPATH/*.cfg
     do
-	manipulate_config_file $f
+	manipulate_config_file $cfgfile
     done
 }
 
 function manipulate_config_file() {
-    sed -i 's! /! ../!g' $1
-    sed -i 's!=/!=../!g' $1
+    f=$1
+    # use backup of original cfg file as source
+    backed_up="$(dirname $f)/.cfg_bkp/$(basename $f).bkp"
+    cp -f $backed_up $f
+    
+    write_keywords_uppercase $f
+    fix_global_paths $f
+    fix_local_paths_for_include $f
+}
+
+function write_keywords_uppercase() {
+    for s in default label kernel append include localboot 'menu begin' 'menu end' 'menu title' menu 'text help' endtext
+    do
+    	sed -i "s/^$s /${s^^} /g" $f
+    	sed -i "s/ $s / ${s^^} /g" $f
+    done
+}
+
+function fix_global_paths() {
+    for s in ' ' '\t' '='
+    do
+	sed -i "s!$s/!$s$ROOTDIR/!g" $f
+    done
+}
+
+function fix_local_paths_for_include() {
+    relative_cfgpath=$(sed "s!^$ROOTDIR!!g" <<< "/boot/$CFGPATH")
+
+    if [[ -n $relative_cfgpath ]]
+    then
+	# relative cfgpath is not empty
+	sed -i "s!INCLUDE !INCLUDE $relative_cfgpath/!g" $f
+    fi
 }
 
 function reset_menufile() {
