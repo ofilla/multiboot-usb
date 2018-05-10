@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 INCLUDEDIR="/boot/syslinux/config"
@@ -6,27 +7,28 @@ menufilename="load_submenus.cfg"
 menufile="$CONFIGDIR/load_submenus.cfg"
 
 function load_isolinux_config() {
-    ROOT=$(sed "s!^$MOUNTPOINT!!" <<< $1)
-    CFGFILE=$(sed "s!^$MOUNTPOINT!!" <<< $2)
-    NAME=$(basename "$ROOT")
+    NAME=$(basename "$ROOTDIR")
     NAME_HUMAN_READABLE=$(sed -e 's/[_-]/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
 
     cat >> $menufile <<EOF
 LABEL $NAME
   MENU LABEL $NAME_HUMAN_READABLE
-  CONFIG $CFGFILE
-  APPEND $ROOT
+  CONFIG $ROOTDIR/$FILENAME
+  APPEND $ROOTDIR
 
 EOF
 
-    CFGPATH=$(dirname $CFGFILE)
-    sed -i 's! /! ../!g' $MOUNTPOINT$CFGPATH/*.cfg
-    sed -i 's!=/!=../!g' $MOUNTPOINT$CFGPATH/*.cfg
+    CFGPATH=$(dirname $file)
 
-    # for file in $CFGPATH/*.cfg
-    # do
-	
-    # done
+    for f in $MOUNTPOINT/boot/$CFGPATH/*.cfg
+    do
+	manipulate_config_file $f
+    done
+}
+
+function manipulate_config_file() {
+    sed -i 's! /! ../!g' $1
+    sed -i 's!=/!=../!g' $1
 }
 
 function reset_menufile() {
@@ -48,25 +50,32 @@ EOF
 reset_menufile
 
 function backup_original_config() {
+    # VARIABLES MOUNTPOINT AND file MUST BE SET!
+    
     # copy original config files for isolinux
     # if files exist
-    dir=$(dirname $1)
+    
+    dir=$(dirname $MOUNTPOINT/boot/$file)
     bkpdir="$dir/.cfg_bkp"
 
     mkdir -p $bkpdir
 
-    for file in $dir/*.cfg
+    for cfgfile in $dir/*.cfg
     do
-	cp -n $file $bkpdir/$(basename $file).bkp
+	cp -n $cfgfile $bkpdir/$(basename $cfgfile).bkp
     done
 }
 
 for ROOTDIR in $(find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$')
 do
-    for file in $(find $ROOTDIR -type f -name isolinux.cfg -print)
+    FILENAME=isolinux.cfg
+    export ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
+    for file in $(find $MOUNTPOINT$ROOTDIR -type f -name $FILENAME -print)
     do
-    	echo "found $(basename $file) in $(basename $ROOTDIR)"
-	backup_original_config "$file"
-    	load_isolinux_config "$ROOTDIR" "$file"
+	export file=$(sed "s!^$MOUNTPOINT/boot/!!" <<< $file)
+    	echo "found $file"
+
+	backup_original_config
+    	load_isolinux_config
     done
 done
