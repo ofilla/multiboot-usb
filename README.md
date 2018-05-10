@@ -14,3 +14,4 @@ Create a multiboot USB stick.
 
 * **kali-linux-mini.iso**: kali linux netinstall image
 * **plpbt.iso**: Plop Boot Manager
+* **lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc
