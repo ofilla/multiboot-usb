@@ -56,7 +56,7 @@ function manipulate_config_file() {
 }
 
 function write_keywords_uppercase() {
-    for s in default label kernel append include localboot 'menu begin' 'menu end' 'menu title' menu 'text help' endtext
+    for s in ui path default label kernel append include localboot 'menu begin' 'menu end' 'menu title' menu 'text help' endtext
     do
     	sed -i "s/^$s /${s^^} /g" $f
     	sed -i "s/ $s / ${s^^} /g" $f
@@ -76,7 +76,10 @@ function fix_local_paths_for_include() {
     if [[ -n $relative_cfgpath ]]
     then
 	# relative cfgpath is not empty
-	sed -i "s!INCLUDE !INCLUDE $relative_cfgpath/!g" $f
+	sed -i "s!INCLUDE !INCLUDE $ROOTDIR$relative_cfgpath/!g" $f
+	sed -i "s!UI !UI $ROOTDIR$relative_cfgpath/!g" $f
+	sed -i "s!PATH !PATH $ROOTDIR$relative_cfgpath!g" $f
+	sed -i "s!gfxboot !gfxboot $ROOTDIR$relative_cfgpath/!g" $f
     fi
 }
 
