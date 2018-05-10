@@ -3,8 +3,6 @@
 iso_mountpoint=/tmp/iso
 mkdir -p $iso_mountpoint
 
-MOUNTPOINT=/media/of/BOOTUSB
-
 for iso in *.iso
 do
     echo "found $iso"
