@@ -6,6 +6,23 @@ CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
 menufilename="load_submenus.cfg"
 menufile="$CONFIGDIR/load_submenus.cfg"
 
+function backup_original_config() {
+    # VARIABLES MOUNTPOINT AND file MUST BE SET!
+    
+    # copy original config files for isolinux
+    # if files exist
+    
+    dir=$(dirname $MOUNTPOINT/boot/$file)
+    bkpdir="$dir/.cfg_bkp"
+
+    mkdir -p $bkpdir
+
+    for cfgfile in $dir/*.cfg
+    do
+    	cp -n $cfgfile $bkpdir/$(basename $cfgfile).bkp
+    done
+}
+
 function load_isolinux_config() {
     NAME=$(basename "$ROOTDIR")
     NAME_HUMAN_READABLE=$(sed -e 's/[_-]/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
@@ -79,29 +96,12 @@ EOF
     echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
 }
 
-reset_menufile
-
-function backup_original_config() {
-    # VARIABLES MOUNTPOINT AND file MUST BE SET!
-    
-    # copy original config files for isolinux
-    # if files exist
-    
-    dir=$(dirname $MOUNTPOINT/boot/$file)
-    bkpdir="$dir/.cfg_bkp"
-
-    mkdir -p $bkpdir
-
-    for cfgfile in $dir/*.cfg
-    do
-	cp -n $cfgfile $bkpdir/$(basename $cfgfile).bkp
-    done
-}
-
 
 
 
 mount ${DEV}1 $MOUNTPOINT
+
+reset_menufile
 
 for ROOTDIR in $(find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$')
 do
