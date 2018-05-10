@@ -3,6 +3,8 @@
 iso_mountpoint=/tmp/iso
 mkdir -p $iso_mountpoint
 
+mount ${DEV}1 $MOUNTPOINT
+
 for iso in *.iso
 do
     echo "found $iso"
@@ -23,3 +25,6 @@ do
 done
 
 rmdir $iso_mountpoint
+
+sync
+umount -l ${DEV}1

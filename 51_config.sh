@@ -98,6 +98,11 @@ function backup_original_config() {
     done
 }
 
+
+
+
+mount ${DEV}1 $MOUNTPOINT
+
 for ROOTDIR in $(find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$')
 do
     FILENAME=isolinux.cfg
@@ -111,3 +116,6 @@ do
     	load_isolinux_config
     done
 done
+
+sync
+umount -l ${DEV}1
