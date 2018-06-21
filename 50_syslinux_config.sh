@@ -1,16 +1,17 @@
 #!/bin/bash
 
+####### config #######
 INCLUDEDIR="/boot/syslinux/config"
-CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
-
 ISODIR='/boot/iso'
-ISOPATH="$MOUNTPOINT$ISODIR"
+menufilename="load_isos.cfg"
+####### config #######
 
-menufilename="load_submenus.cfg"
-menufile="$CONFIGDIR/load_submenus.cfg"
+CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
+ISOPATH="$MOUNTPOINT$ISODIR"
+menufile="$CONFIGDIR/$menufilename"
 
 ##### mount
-# mount ${DEV}1 $MOUNTPOINT
+mount ${DEV}1 $MOUNTPOINT
 
 
 
@@ -56,4 +57,4 @@ echo "done creating $menufile"
 
 ##### unmount
 sync
-#umount -l ${DEV}1
+umount -l ${DEV}1
