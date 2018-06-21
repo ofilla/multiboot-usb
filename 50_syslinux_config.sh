@@ -1,90 +1,21 @@
-
 #!/bin/bash
 
 INCLUDEDIR="/boot/syslinux/config"
 CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
+
+ISODIR='/boot/iso'
+ISOPATH="$MOUNTPOINT$ISODIR"
+
 menufilename="load_submenus.cfg"
 menufile="$CONFIGDIR/load_submenus.cfg"
 
-function backup_original_config() {
-    # VARIABLES MOUNTPOINT AND file MUST BE SET!
-    
-    # copy original config files for isolinux
-    # if files exist
-    
-    dir=$(dirname $MOUNTPOINT/boot/$file)
-    bkpdir="$dir/.cfg_bkp"
+##### mount
+# mount ${DEV}1 $MOUNTPOINT
 
-    mkdir -p $bkpdir
 
-    for cfgfile in $dir/*.cfg
-    do
-    	cp -n $cfgfile $bkpdir/$(basename $cfgfile).bkp
-    done
-}
 
-function load_isolinux_config() {
-    NAME=$(basename "$ROOTDIR")
-    NAME_HUMAN_READABLE=$(sed -e 's/[_-]/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
-
-    cat >> $menufile <<EOF
-LABEL $NAME
-  MENU LABEL $NAME_HUMAN_READABLE
-  CONFIG /boot/$file
-  APPEND $ROOTDIR
-
-EOF
-
-    export CFGPATH=$(dirname $file)
-    export rootdir=$(dirname $CFGPATH | sed "s!$MOUNTPOINT!!")
-    
-    for cfgfile in $MOUNTPOINT/boot/$CFGPATH/*.cfg
-    do
-	manipulate_config_file $cfgfile
-    done
-}
-
-function manipulate_config_file() {
-    f=$1
-    # use backup of original cfg file as source
-    backed_up="$(dirname $f)/.cfg_bkp/$(basename $f).bkp"
-    cp -f $backed_up $f
-    
-    write_keywords_uppercase $f
-    fix_global_paths $f
-    fix_local_paths_for_include $f
-}
-
-function write_keywords_uppercase() {
-    for s in ui path default label kernel append include localboot 'menu begin' 'menu end' 'menu title' menu 'text help' endtext
-    do
-    	sed -i "s/^$s /${s^^} /g" $f
-    	sed -i "s/ $s / ${s^^} /g" $f
-    done
-}
-
-function fix_global_paths() {
-    for s in ' ' '\t' '='
-    do
-	sed -i "s!$s/!$s$ROOTDIR/!g" $f
-    done
-}
-
-function fix_local_paths_for_include() {
-    relative_cfgpath=$(sed "s!^$ROOTDIR!!g" <<< "/boot/$CFGPATH")
-
-    if [[ -n $relative_cfgpath ]]
-    then
-	# relative cfgpath is not empty
-	sed -i "s!INCLUDE !INCLUDE $ROOTDIR$relative_cfgpath/!g" $f
-	sed -i "s!UI !UI $ROOTDIR$relative_cfgpath/!g" $f
-	sed -i "s!PATH !PATH $ROOTDIR$relative_cfgpath!g" $f
-	sed -i "s!gfxboot !gfxboot $ROOTDIR$relative_cfgpath/!g" $f
-    fi
-}
-
-function reset_menufile() {
-    cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
+##### reset menufile
+cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
 PATH /boot/syslinux/modules/bios
 UI vesamenu.c32
 
@@ -95,30 +26,34 @@ INCLUDE $INCLUDEDIR/$menufilename
 INCLUDE $INCLUDEDIR/powermenu.cfg
 EOF
 
-    echo 'reset menufile'
-    echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
-}
+echo 'reset menufile'
+echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
 
 
 
-
-mount ${DEV}1 $MOUNTPOINT
-
-reset_menufile
-
-for ROOTDIR in $(find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$')
+##### insert ISO entries
+echo "creating $menufile ..."
+for iso in $( ls $ISOPATH/*.iso $ISOPATH/*.ISO 2> /dev/null )
 do
-    FILENAME=isolinux.cfg
-    export ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
-    for file in $(find $MOUNTPOINT$ROOTDIR -type f -name $FILENAME -print)
-    do
-	export file=$(sed "s!^$MOUNTPOINT/boot/!!" <<< $file)
-    	echo "found $file"
+    filename="${iso##*/}"
+    NAME=$(sed -e 's/[^A-Za-z0-9_.-]/-/g' <<< "$filename")
+    NAME_HUMAN_READABLE=$(sed -e 's/.iso$//' -e 's/-/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
 
-	backup_original_config
-    	load_isolinux_config
-    done
+    cat >> $menufile <<EOF
+LABEL $NAME
+  MENU LABEL $NAME_HUMAN_READABLE
+  LINUX memdisk
+  INITRD $ISODIR/$filename
+  APPEND iso
+
+EOF
+
+    echo "  added iso entry for $NAME_HUMAN_READABLE"
 done
+echo "done creating $menufile"
 
+
+
+##### unmount
 sync
-umount -l ${DEV}1
+#umount -l ${DEV}1
