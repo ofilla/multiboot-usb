@@ -9,9 +9,9 @@ mkdir -p $ISOPATH
 
 for iso in *.iso
 do
-    echo "found $iso"
-
-    cp $iso $ISOPATH
+    echo -n "copying iso: "
+    rsync -WLch --progress $iso $ISOPATH
+    sync
 done
 
 echo 'copied iso files'
