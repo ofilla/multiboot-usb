@@ -23,12 +23,12 @@ UI vesamenu.c32
 MENU TITLE Multiboot-USB
 
 INCLUDE $INCLUDEDIR/stdmenu.cfg
-INCLUDE $INCLUDEDIR/$menufilename
 INCLUDE $INCLUDEDIR/powermenu.cfg
+INCLUDE $INCLUDEDIR/$menufilename
 EOF
 
 echo 'reset menufile'
-echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
+echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg" > $menufile
 
 
 
@@ -38,15 +38,15 @@ for iso in $( ls $ISOPATH/*.iso $ISOPATH/*.ISO 2> /dev/null )
 do
     filename="${iso##*/}"
     NAME=$(sed -e 's/[^A-Za-z0-9_.-]/-/g' <<< "$filename")
-    NAME_HUMAN_READABLE=$(sed -e 's/.iso$//' -e 's/-/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
+    NAME_HUMAN_READABLE=$(sed -e 's/.iso$//' -e 's/[_-]/ /g' -e 's/[^ ]*/\u&/g' <<< "$NAME" )
 
     cat >> $menufile <<EOF
+
 LABEL $NAME
   MENU LABEL $NAME_HUMAN_READABLE
   LINUX memdisk
   INITRD $ISODIR/$filename
   APPEND iso
-
 EOF
 
     echo "  added iso entry for $NAME_HUMAN_READABLE"
