@@ -8,7 +8,7 @@ function backup_original_config() {
     # if files exist
     file=${file:-$1}
     
-    dir=$(dirname $MOUNTPOINT/boot/$file)
+    dir=$(dirname $MOUNTPOINT$EXTRACTED_ISODIR/$file)
     bkpdir="$dir/.cfg_bkp"
 
     if [[ -d $bkpdir ]]; then # bkpdir exists

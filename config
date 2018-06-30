@@ -10,6 +10,7 @@ PARTITION_SIZE=10000
 LABEL='BOOTUSB'
 FS=ext2 # file system, mkfs.$FS must exist!
 
-ISODIR='/boot/iso' # store isos here # must start with /
+ISODIR='/boot/iso' # store isos here
+EXTRACTED_ISODIR='/boot/extracted' # store extracted isos here
 INCLUDEDIR="/boot/syslinux/config"
 menufilename="load_isos.cfg"

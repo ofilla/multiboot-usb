@@ -11,7 +11,7 @@ do
     
     dirname=${iso%.iso}
     dirname=$(echo $dirname | sed -e 's/[- ]/_/g' -e 's/[^A-Za-z0-9_]//g')
-    dest=$MOUNTPOINT/boot/$dirname
+    dest=$MOUNTPOINT$EXTRACTED_ISODIR/$dirname
 
     if [[ -d $dest ]]; then # dir exists
 	# do not do anything
@@ -23,7 +23,7 @@ do
     
     mount -t iso9660 -o ro $iso $iso_mountpoint
     echo "  copying ..."
-    cp -Pr $iso_mountpoint/* $iso_mountpoint/.??* $MOUNTPOINT/boot/$dirname/
+    cp -Pr $iso_mountpoint/* $iso_mountpoint/.??* $dest/
     
     umount -lf $iso_mountpoint
     echo " copied to $dirname"

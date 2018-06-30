@@ -3,7 +3,7 @@
 source config
 source extracting_functions.sh
 
-alias find_bootable_dirs="find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$'"
+alias find_bootable_dirs="find $MOUNTPOINT$EXTRACTED_ISODIR/* -maxdepth 0 -type d"
 
 mount ${DEV}1 $MOUNTPOINT
 
@@ -15,7 +15,7 @@ do
     export ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
     for file in $(find $MOUNTPOINT$ROOTDIR -type f -name $FILENAME -print)
     do
-	export file=$(sed "s!^$MOUNTPOINT/boot/!!" <<< $file)
+	export file=$(sed "s!^$MOUNTPOINT$EXTRACTED_ISODIR/!!" <<< $file)
     	echo "found $file"
 
 	backup_original_config "$file"
