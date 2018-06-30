@@ -20,11 +20,13 @@ working:
 * **plpbt.iso**: Plop Boot Manager
 * **rescatux.iso**: RescATux
 * **riplinux.iso**: RIPLinuX 11.7
-* ~~**lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc~~ not working
 
 not working:
 * **hacking-live-1.0.iso** LiveCD from the book [Hacking - The Art of Exploitation](https://nostarch.com/hackingCD.htm)
 * **KNOPPIX_2013-06-16-DE.iso**: Knoppix
+* **lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc
+
+The problems with Knoppix and Lubuntu are the same: They start, but when they search for the disk to access it (e.g. casper-files) they fail. This is a known problem with memdisk, afaik it's not a bug.
 
 # see also
 
