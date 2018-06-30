@@ -5,7 +5,7 @@ source config
 mkdir -p $iso_mountpoint
 mount ${DEV}1 $MOUNTPOINT
 
-for iso in $(ls *.iso 2> /dev/null)
+for iso in $(ls extracted_isos/*.iso 2> /dev/null)
 do
     echo "found $iso"
     
