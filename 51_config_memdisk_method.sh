@@ -4,24 +4,11 @@ source config
 
 CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
 ISOPATH="$MOUNTPOINT$ISODIR"
-menufile="$CONFIGDIR/$menufilename"
+menufile="$CONFIGDIR/$menufilename_load"
 
 mount ${DEV}1 $MOUNTPOINT
 
-
-##### reset menufile
-cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
-PATH /boot/syslinux/modules/bios
-UI vesamenu.c32
-
-MENU TITLE Multiboot-USB
-
-INCLUDE $INCLUDEDIR/stdmenu.cfg
-INCLUDE $INCLUDEDIR/powermenu.cfg
-INCLUDE $INCLUDEDIR/$menufilename
-EOF
-
-echo 'reset menufile'
+echo 'reset menufile for loaded isos'
 echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg" > $menufile
 
 

@@ -3,14 +3,16 @@ DEV=''
 
 # configure partition to install syslinux to
 MOUNTPOINT=/mnt
+iso_mountpoint=/tmp/iso
 FORCE=1 # FORCE=0: no safety check before formatting
 
 # if the device is smaller than PARTITION_SIZE use the entire device
 PARTITION_SIZE=10000
-LABEL='BOOTUSB'
+LABEL='bootstick'
 FS=ext2 # file system, mkfs.$FS must exist!
 
 ISODIR='/boot/iso' # store isos here
 EXTRACTED_ISODIR='/boot/extracted' # store extracted isos here
 INCLUDEDIR="/boot/syslinux/config"
-menufilename="load_isos.cfg"
+menufilename_load="load_isos.cfg"
+menufilename_extract="extracted_images.cfg"

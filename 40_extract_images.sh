@@ -2,10 +2,13 @@
 
 source config
 
+extracted_dir=extracted_isos
+
+umount ${DEV}1 2> /dev/null
 mkdir -p $iso_mountpoint
 mount ${DEV}1 $MOUNTPOINT
 
-for iso in $(ls extracted_isos/*.iso 2> /dev/null)
+for iso in $(ls $extracted_dir/*.iso 2> /dev/null | sed "s!^$extracted_dir/!!")
 do
     echo "found $iso"
     
@@ -19,9 +22,10 @@ do
 	continue
     fi
     
-    mkdir $dest
+    mkdir -p $dest
     
-    mount -t iso9660 -o ro $iso $iso_mountpoint
+    mount -t iso9660 -o ro $extracted_dir/$iso $iso_mountpoint
+    
     echo "  copying ..."
     cp -Pr $iso_mountpoint/* $iso_mountpoint/.??* $dest/
     

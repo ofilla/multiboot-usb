@@ -1,7 +1,7 @@
 source config
 
 CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
-menufile="$CONFIGDIR/$menufilename"
+menufile="$CONFIGDIR/$menufilename_extract"
 
 function backup_original_config() {
     # copy original config files for isolinux
@@ -41,7 +41,7 @@ EOF
     export CFGPATH=$(dirname $file)
     export rootdir=$(dirname $CFGPATH | sed "s!$MOUNTPOINT!!")
     
-    for cfgfile in $MOUNTPOINT/boot/$CFGPATH/*.cfg
+    for cfgfile in $MOUNTPOINT$EXTRACTED_ISODIR/$CFGPATH/*.cfg
     do
 	manipulate_config_file $cfgfile
     done
@@ -87,19 +87,4 @@ function fix_local_paths_for_include() {
 	sed -i "s!PATH !PATH $ROOTDIR$relative_cfgpath!g" $f
 	sed -i "s!gfxboot !gfxboot $ROOTDIR$relative_cfgpath/!g" $f
     fi
-}
-
-function reset_config_files() {
-    cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
-PATH /boot/syslinux/modules/bios
-UI vesamenu.c32
-
-MENU TITLE Multiboot-USB
-
-INCLUDE $INCLUDEDIR/stdmenu.cfg
-INCLUDE $INCLUDEDIR/$menufilename
-INCLUDE $INCLUDEDIR/powermenu.cfg
-EOF
-    echo 'reset menufile'
-    echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg\n" > $menufile
 }
