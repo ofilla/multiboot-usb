@@ -7,12 +7,13 @@ Create a multiboot USB stick.
 
 # usage
 
-* copy iso images to boot into this directory
-* *sudo start.sh <name of device>* from command line
+* Copy iso images to boot into the subdirectories **iso** or **extracted iso** according to load mode (check according README files). I'd recommend to try the method used in **iso** first.
+* Set configurations in **config**.
+* Start tool from command line: *sudo start.sh*.
 
 ## tested with
 
-working:
+working as **iso**:
 * **clonezilla-live-2.5.2-31-amd64**: CloneZilla Live
 * **dban.iso**: Darik's Boot and Nuke
 * **hirens-boot-cd.iso**: Hiren's Boot CD, version 15.2
@@ -21,12 +22,10 @@ working:
 * **rescatux.iso**: RescATux
 * **riplinux.iso**: RIPLinuX 11.7
 
-not working:
+not working as **iso**:
 * **hacking-live-1.0.iso** LiveCD from the book [Hacking - The Art of Exploitation](https://nostarch.com/hackingCD.htm)
 * **KNOPPIX_2013-06-16-DE.iso**: Knoppix
 * **lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc
-
-The problems with Knoppix and Lubuntu are the same: They start, but when they search for the disk to access it (e.g. casper-files) they fail. This is a known problem with memdisk, afaik it's not a bug.
 
 # see also
 
