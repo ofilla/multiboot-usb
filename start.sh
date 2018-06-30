@@ -14,7 +14,7 @@ for file in $(ls ??_*.sh); do
     echo "============ finished: $file"
 done
 
-mount ${DEV}1 $MOUNTPONT
+mount ${DEV}1 $MOUNTPOINT
 chmod -R o+r $MOUNTPOINT/*
 find $MOUNTPOINT -type d | xargs chmod o+x
 umount $MOUNTPOINT
