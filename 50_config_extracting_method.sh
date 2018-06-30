@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source config
-source syslinux_config_functions
+source extracting_functions.sh
 
 alias find_bootable_dirs="find $MOUNTPOINT/boot/* -maxdepth 0 -type d | grep -v 'syslinux$'"
 
