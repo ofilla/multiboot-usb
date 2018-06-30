@@ -13,7 +13,8 @@ Create a multiboot USB stick.
 
 ## tested with
 
-working as **iso**:
+### working as **iso**
+
 * **clonezilla-live-2.5.2-31-amd64**: CloneZilla Live
 * **dban.iso**: Darik's Boot and Nuke
 * **hirens-boot-cd.iso**: Hiren's Boot CD, version 15.2
@@ -22,10 +23,15 @@ working as **iso**:
 * **rescatux.iso**: RescATux
 * **riplinux.iso**: RIPLinuX 11.7
 
-not working as **iso**:
+### working as **extracted iso**
+not working yet
+
+* ~~**lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc~~
+
+
+### not working
+
 * **hacking-live-1.0.iso** LiveCD from the book [Hacking - The Art of Exploitation](https://nostarch.com/hackingCD.htm)
-* **KNOPPIX_2013-06-16-DE.iso**: Knoppix
-* **lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc
 
 # see also
 
