@@ -1,13 +1,14 @@
 #!/bin/bash
 
-ISODIR='/boot/iso'
+source config
+
 ISOPATH="$MOUNTPOINT$ISODIR"
 
 mount ${DEV}1 $MOUNTPOINT
 
 mkdir -p $ISOPATH
 
-for iso in *.iso
+for iso in $(ls *.iso 2> /dev/null)
 do
     echo -n "copying iso: "
     rsync -WLch --progress $iso $ISOPATH

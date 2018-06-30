@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source config
+
 ####### config #######
 INCLUDEDIR="/boot/syslinux/config"
 ISODIR='/boot/iso'

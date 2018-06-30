@@ -1,0 +1,11 @@
+# must set following lines
+DEV=''
+
+# configure partition to install syslinux to
+MOUNTPOINT=/mnt
+FORCE=1 # FORCE=0: no safety check before formatting
+# if the device is smaller than PARTITION_SIZE use the entire device
+PARTITION_SIZE=10000
+LABEL='BOOTUSB'
+FS=ext2 # file system, mkfs.$FS must exist!
+ISODIR='/boot/iso' # store isos here # must start with /

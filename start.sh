@@ -5,12 +5,14 @@ if [[ -z "$ARGV" ]]; then
     ARGV=( $@ )
 fi
 
+source config
 export ARGV
-MOUNTPOINT=/mnt
-export MOUNTPOINT
 
 for file in $(ls ??_*.sh); do
     source $file
 done
+
+chmod -R o+r $MOUNTPOINT/*
+find $MOUNTPOINT -type d | xargs chmod o+x
 
 echo "all done"

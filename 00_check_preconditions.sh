@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DEV="${ARGV[0]}"
+source config
 
 if [[ "$DEV" == "" ]]; then
    echo "no destination device"
