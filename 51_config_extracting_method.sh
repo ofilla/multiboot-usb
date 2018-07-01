@@ -12,7 +12,6 @@ for ROOTDIR in $(find $MOUNTPOINT$EXTRACTED_ISODIR/* -maxdepth 0 -type d)
 do
     FILENAME=isolinux.cfg
     export ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
-    echo $ROOTDIR
     for file in $(find $MOUNTPOINT$ROOTDIR -type f -name $FILENAME -print)
     do
 	export file=$(sed "s!^$MOUNTPOINT$EXTRACTED_ISODIR/!!" <<< $file)
