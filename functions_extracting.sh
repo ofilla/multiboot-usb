@@ -34,7 +34,7 @@ function load_isolinux_config() {
 
 LABEL $NAME
   MENU LABEL $NAME_HUMAN_READABLE
-  CONFIG /boot/$file
+  CONFIG $EXTRACTED_ISODIR/$file
   APPEND $ROOTDIR
 EOF
 
