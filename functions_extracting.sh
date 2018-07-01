@@ -64,6 +64,7 @@ function write_keywords_uppercase() {
     do
     	sed -i "s/^$s /${s^^} /g" $f
     	sed -i "s/ $s / ${s^^} /g" $f
+    	sed -i "s/\t$s /\t${s^^} /g" $f
     done
 }
 
