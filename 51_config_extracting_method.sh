@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source config
-source extracting_functions.sh
+source functions_extracting.sh
 
 mount ${DEV}1 $MOUNTPOINT
 
