@@ -60,11 +60,19 @@ function manipulate_config_file() {
 
 function write_keywords_uppercase() {
     f=$1
-    for s in ui path default label kernel append include localboot 'menu begin' 'menu end' 'menu title' 'menu hide' 'menu color' menu 'text help' endtext
+    for s in ui path default label kernel append include localboot \
+		'menu begin' 'menu end' 'menu title' 'menu hide' 'menu color' \
+		menu 'text help' endtext config
     do
     	sed -i "s/^$s /${s^^} /g" $f
     	sed -i "s/ $s / ${s^^} /g" $f
     	sed -i "s/\t$s /\t${s^^} /g" $f
+    done
+    for s in 'text help' endtext
+    do
+    	sed -i "s/^$s$/${s^^}/g" $f
+    	sed -i "s/ $s$/ ${s^^}/g" $f
+    	sed -i "s/\t$s$/\t${s^^}/g" $f
     done
 }
 
@@ -75,7 +83,7 @@ function fix_paths_for_include() {
     # fix locale paths
     if [[ -n $local_cfgpath ]]
     then
-    	for param in INCLUDE UI PATH KERNEL gfxboot 'MENU BACKGROUND'
+    	for param in INCLUDE UI PATH KERNEL CONFIG gfxboot 'MENU BACKGROUND'
     	do
     	    # convert global to local path
     	    sed -i "s!$param !$param $local_cfgpath/!g" $f
@@ -83,10 +91,10 @@ function fix_paths_for_include() {
     fi
     
     # fix absolute paths
-    for param in INCLUDE UI PATH KERNEL gfxboot
+    for param in INCLUDE UI PATH KERNEL CONFIG gfxboot
     do
 	# convert global to local path
 	sed -i "s!$param $local_cfgpath//!$param !g" $f
     done
-    sed -i 's!=/!=!g' $f
+    sed -i 's!initrd=/!initrd=!g' $f
 }
