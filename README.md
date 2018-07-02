@@ -38,3 +38,4 @@ not working yet
 only some of many pages with information:
 
 * <https://blog.sleeplessbeastie.eu/2015/12/07/how-to-create-bootable-usb-flash-drive/>
+* <https://theartofmachinery.com/2016/04/21/partitioned_live_usb.html>
