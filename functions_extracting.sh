@@ -72,21 +72,21 @@ function fix_paths_for_include() {
     f=$1
     local_cfgpath=$(sed "s!^$ROOTDIR/!!g" <<< "$EXTRACTED_ISODIR/$CFGPATH")
 
-    # fix absolute paths
-    for param in INCLUDE UI PATH gfxboot
-    do
-	# convert global to local path
-	sed -i "s!$param /!$param !g" $f
-    done
-    
     # fix locale paths
     if [[ -n $local_cfgpath ]]
     then
-	# local cfgpath is not empty
-	for param in INCLUDE UI PATH KERNEL gfxboot
-	do
-	    # convert global to local path
-	    sed -i "s!$param !$param $local_cfgpath/!g" $f
-	done
+    	for param in INCLUDE UI PATH KERNEL gfxboot 'MENU BACKGROUND'
+    	do
+    	    # convert global to local path
+    	    sed -i "s!$param !$param $local_cfgpath/!g" $f
+    	done
     fi
+    
+    # fix absolute paths
+    for param in INCLUDE UI PATH KERNEL gfxboot
+    do
+	# convert global to local path
+	sed -i "s!$param $local_cfgpath//!$param !g" $f
+    done
+    sed -i 's!=/!=!g' $f
 }
