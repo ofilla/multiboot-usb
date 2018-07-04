@@ -1,1 +1,2 @@
-in functions: $f -> "$f"
+* in functions: $f -> "$f"
+* sed: not n times running but create command with n times '-e ..'
