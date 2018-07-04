@@ -36,7 +36,8 @@ EOF
 create_partition "$DEV" "$SIZE" "$LABEL"
 
 # set bootable flag to partition 1
-gdisk $DEV <<EOF
+echo 'setting flag to partiton: legacy BIOS bootable'
+gdisk $DEV > /dev/null <<EOF
 x
 a
 2
@@ -49,5 +50,5 @@ EOF
 DD_ISOS=$(ls dd_isos)
 for iso in $DD_ISOS
 do
-    create_partition "$DEV" $(du -m dd_isos/$iso) "$iso"
+    create_partition "$DEV" $(du -m dd_isos/$iso) "${iso##*/}"
 done
