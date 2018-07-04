@@ -3,9 +3,9 @@
 source config
 
 if [[ "$DEV" == "" ]]; then
-   echo "no destination device"
+   echo "E: no destination device set"
    exit 1
 elif [[ $UID != 0 ]]; then
-   echo "no root"
+   echo "E: no root permissions"
    exit 2
 fi
