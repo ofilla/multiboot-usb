@@ -1,43 +1,53 @@
 #!/bin/bash
 
 source config
+source functions_formatting.sh
 
-# get partition size in MB
-eval $(lsblk -Pid $DEV -o SIZE) # disksize
-SIZE=$(sed -e 's/,/./' <<< "$SIZE")
-if [[ "$SIZE" == *"G" ]]; then
-    # GB
-    SIZE=$(bc <<< "$SIZE * 1000" | cut -d. -f1)
-else
-    echo "$SIZE is not usable yet" >&2
-    exit 3
-fi
-
-if [[ $SIZE -gt $PARTITION_SIZE ]]; then
-    # use partition size if possible
-    # if device is too small, use entire device
-    SIZE=$PARTITION_SIZE
-fi
-
+# unmounting
 echo "unmounting $DEV ..."
 umount -lf ${DEV}* 2> /dev/null
 
+# convert partsize into MB
+if [[ "$PARTSIZE" == *"G" ]]; then
+    # GB
+    SIZE=$(sed 's/G$//' <<< "$PARTSIZE")
+    SIZE=$(bc <<< "$SIZE * 1024" | cut -d. -f1)
+elif [[ "$PARTSIZE" == *"M" ]]; then
+    # MB
+    SIZE=$(sed 's/M$//' <<< "$PARTSIZE")
+else
+    echo "E: cannot understand configuration: PARTSIZE=$PARTSIZE" >&2
+    exit 3
+fi
+
+
 # partition disk
-echo -e "repartitioning device ... 
-partition 1: \t $SIZE \t for $PARTITION_LABEL
-partition 2: \t rest \t for persistent data
-"
-# create new GPT and first partition
-gdisk $DEV <<EOF
+echo "repartitioning device ... "
+partnumber=1
+
+echo 're-creating partition table'
+gdisk $DEV > /dev/null <<EOF
 o
 y
-n
-1
 
-+${SIZE}M
-8300
+w
+y
+EOF
+
+create_partition "$DEV" "$free_mb" "$SIZE" "$partnumber" "$LABEL"
+
+DD_ISOS=$(ls dd_isos)
+for iso in $DD_ISOS
+do
+    break
+done
+
+
+# set bootable flag to partition 1
+gdisk $DEV <<EOF
 x
 a
+1
 2
 
 w
