@@ -27,17 +27,21 @@ echo -e "repartitioning device ...
 partition 1: \t $SIZE \t for $PARTITION_LABEL
 partition 2: \t rest \t for persistent data
 "
-fdisk $DEV <<EOF
+# create new GPT and first partition
+gdisk $DEV <<EOF
 o
+y
 n
-p
 1
 
 +${SIZE}M
-
+8300
+x
 a
+2
 
 w
+y
 EOF
 
 echo
