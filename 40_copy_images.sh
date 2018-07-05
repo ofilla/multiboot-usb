@@ -6,9 +6,11 @@ ISOPATH="$MOUNTPOINT$ISODIR"
 
 mount ${DEV}1 $MOUNTPOINT
 
-mkdir -p $ISOPATH
+if [[ "$(ls $copy_isodir/*.iso)" != "" ]]; then
+    mkdir -p $ISOPATH
+fi
 
-for iso in $(ls isos/*.iso 2> /dev/null)
+for iso in $(ls $copy_isodir/*.iso 2> /dev/null)
 do
     echo -n "copying iso: "
     rsync -WLch --progress $iso $ISOPATH

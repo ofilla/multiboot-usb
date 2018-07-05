@@ -17,6 +17,9 @@ EXTRACTED_ISODIR='/boot/extracted' # store extracted isos here
 INCLUDEDIR="/boot/syslinux/config"
 menufilename_load="load_isos.cfg"
 menufilename_extract="extracted_images.cfg"
+menufilename_chain="chain_images.cfg"
 
 # local config
+copy_isodir=copy_isos
 dd_isodir=dd_isos
+extracted_dir=extracted_isos

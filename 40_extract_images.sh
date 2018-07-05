@@ -2,8 +2,6 @@
 
 source config
 
-extracted_dir=extracted_isos
-
 umount ${DEV}1 2> /dev/null
 mkdir -p $iso_mountpoint
 mount ${DEV}1 $MOUNTPOINT
