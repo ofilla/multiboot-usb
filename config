@@ -11,8 +11,12 @@ PARTSIZE=100M # size of first partition, can be M or G
 LABEL='BOOTSTICK'
 FS=vfat # file system, mkfs.$FS must exist!
 
+# config on stick
 ISODIR='/boot/iso' # store isos here
 EXTRACTED_ISODIR='/boot/extracted' # store extracted isos here
 INCLUDEDIR="/boot/syslinux/config"
 menufilename_load="load_isos.cfg"
 menufilename_extract="extracted_images.cfg"
+
+# local config
+dd_isodir=dd_isos
