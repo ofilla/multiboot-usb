@@ -7,7 +7,7 @@ all data will be lost!
 Type YES to continue
 > "
 
-if [[ $FORCE ]]; then
+if [[ $FORCE > 0 ]]; then
    echo "flag FORCE set, continue anyway"
 else
    read ANSWER
