@@ -4,7 +4,7 @@ DEV=''
 # configure partition to install syslinux to
 MOUNTPOINT=/mnt
 iso_mountpoint=/tmp/iso
-FORCE=1 # FORCE=0: no safety check before formatting
+FORCE=0 # FORCE=1: no safety check before formatting
 
 # configure the first partition here
 PARTSIZE=100M # size of first partition, can be M or G
