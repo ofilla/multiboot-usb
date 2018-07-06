@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source config
+source check_preconditions.sh
 
 echo -n "re-formatting $DEV
 all data will be lost!

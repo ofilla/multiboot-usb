@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source config
+source check_preconditions.sh
 
 umount -lf ${DEV}1 2> /dev/null
 echo "creating partition $LABEL ..."

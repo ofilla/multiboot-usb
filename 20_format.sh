@@ -2,6 +2,7 @@
 
 source config
 source functions_formatting.sh
+source check_preconditions.sh
 
 # unmounting
 echo "unmounting $DEV ..."

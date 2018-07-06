@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source config
+source check_preconditions.sh
 
 ISOPATH="$MOUNTPOINT$ISODIR"
 
