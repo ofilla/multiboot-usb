@@ -7,7 +7,7 @@ umount ${DEV}1 2> /dev/null
 mkdir -p $iso_mountpoint
 mount ${DEV}1 $MOUNTPOINT
 
-for iso in $(ls $extracted_dir/*.iso 2> /dev/null | sed "s!^$extracted_dir/!!")
+for iso in $(ls $extracted_isodir/*.iso 2> /dev/null | sed "s!^$extracted_isodir/!!")
 do
     echo "found $iso"
     
@@ -23,7 +23,7 @@ do
     
     mkdir -p $dest
     
-    mount -t iso9660 -o ro $extracted_dir/$iso $iso_mountpoint
+    mount -t iso9660 -o ro $extracted_isodir/$iso $iso_mountpoint
     
     echo "  copying ..."
     cp -Pr $iso_mountpoint/* $iso_mountpoint/.??* $dest/

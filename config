@@ -22,5 +22,5 @@ menufilename_chain="chain_images.cfg"
 # local config
 # configure the names of the directories to put iso images
 dd_isodir=isos # images used by *dd method*
-copy_isodir=memdisk_isos # images used by *memdisk method*
-extracted_dir=extracted_isos # images used by *extracting method*
+memdisk_isodir=memdisk_isos # images used by *memdisk method*
+extracted_isodir=extracted_isos # images used by *extracting method*
