@@ -14,6 +14,7 @@ MENU TITLE Multiboot-USB
 
 INCLUDE $INCLUDEDIR/stdmenu.cfg
 INCLUDE $INCLUDEDIR/powermenu.cfg
+INCLUDE $INCLUDEDIR/$menufilename_chain
 INCLUDE $INCLUDEDIR/$menufilename_load
 INCLUDE $INCLUDEDIR/$menufilename_extract
 EOF
