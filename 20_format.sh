@@ -22,7 +22,6 @@ else
 fi
 
 
-# partition disk
 echo "repartitioning device ... "
 
 echo 're-creating partition table'
@@ -36,7 +35,7 @@ EOF
 
 create_partition "$DEV" "$SIZE" "$LABEL"
 
-# set bootable flag to partition 1
+
 echo 'setting flag to partiton: legacy BIOS bootable'
 gdisk $DEV > /dev/null <<EOF
 x
@@ -53,3 +52,16 @@ for iso in $DD_ISOS
 do
     create_partition "$DEV" $(du -m $dd_isodir/$iso) "${iso##*/}"
 done
+
+
+echo "creating hybrid GPT/MBR ..."
+gdisk $DEV > /dev/null <<EOF
+r
+h
+1
+y
+
+n
+w
+y
+EOF
