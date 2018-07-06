@@ -30,3 +30,4 @@ EOF
 done
 
 sync
+umount ${DEV}1
