@@ -7,7 +7,7 @@ ISOPATH="$MOUNTPOINT$ISODIR"
 
 mount ${DEV}1 $MOUNTPOINT
 
-if [[ "$(ls $memdisk_isodir/*.iso)" != "" ]]; then
+if [[ "$(ls $memdisk_isodir/*.iso 2> /dev/null)" != "" ]]; then
     mkdir -p $ISOPATH
 fi
 
@@ -18,7 +18,7 @@ do
     sync
 done
 
-echo 'copied iso files'
+echo 'copied iso files for memdisk method'
 
 sync
 umount -l ${DEV}1
