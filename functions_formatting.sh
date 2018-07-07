@@ -22,7 +22,7 @@ function create_partition() {
     label=$3
 
     assert_free_space_more_than $size
-    echo -e "creating partition $partnumber: \t ${SIZE}M \t for $label"
+    echo -e "creating partition $partnumber: \t ${size}M \t for $label"
     # create new GPT and first partition
     gdisk $device > /dev/null <<EOF
 n
