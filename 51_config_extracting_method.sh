@@ -9,7 +9,7 @@ mount ${DEV}1 $MOUNTPOINT
 echo 'reset menufile for extracted images'
 echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg" > $menufile
 
-for ROOTDIR in $(find $MOUNTPOINT$EXTRACTED_ISODIR/* -maxdepth 0 -type d)
+for ROOTDIR in $(find $MOUNTPOINT$EXTRACTED_ISODIR/* -maxdepth 0 -type d 2> /dev/null)
 do
     FILENAME=isolinux.cfg
     ROOTDIR=$(sed "s!^$MOUNTPOINT!!" <<< "$ROOTDIR")
