@@ -27,6 +27,7 @@ LABEL $NAME
   COM32 chain
   APPEND hd0,$partnumber
 EOF
+    partnumber=$(($partnumber + 1))
 done
 
 sync

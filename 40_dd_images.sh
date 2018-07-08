@@ -15,6 +15,7 @@ do
     dd if=$dd_isodir/$iso of=$DEV$partnumber bs=1M &> /dev/null || abort "dd failed" 4
     sync
     echo done
+    partnumber=$(($partnumber + 1))
 done
 
 umount $DEV* 2> /dev/null
