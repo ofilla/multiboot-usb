@@ -3,10 +3,12 @@
 source config
 source check_preconditions.sh
 
+sleep 10
 umount -lf ${DEV}1 2> /dev/null
 echo "creating partition $LABEL ..."
 
 function create_dirs() {
+    sleep 10
     echo 'copying data'
     mount ${DEV}1 $MOUNTPOINT
     mkdir -p $MOUNTPOINT/boot
