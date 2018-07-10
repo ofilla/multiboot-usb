@@ -46,7 +46,7 @@ If this variation of the *extracting method* shall be used, syslinux must be ins
 ### working with **dd method**
 
 * **lubuntu-16.04.3-desktop-amd64.iso**: Lubuntu install disc
-
+* **kali-linux-2018.2-amd64.iso**: Kali Linux 2018.2
 ### not working
 
 * **hacking-live-1.0.iso** LiveCD from the book [Hacking - The Art of Exploitation](https://nostarch.com/hackingCD.htm)
