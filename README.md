@@ -27,6 +27,10 @@ These images will be mounted, their contents will copied on the stick. Then, the
 
 Currently, this method fails. I stopped development of this method since the *dd method* works.
 
+**Alternative:** The images may be extracted to an own partition, like in the *dd method*. The main difference to the latter is that the partition size can be set manually - and the partition can be *writable*. Theirfore, changes can be made on the image, e.g. the *filesystem.squashfs* can be modified, e.g. by installing updates.
+
+If this variation of the *extracting method* shall be used, syslinux must be installed on that partition, too. Maybe it is needed to rename the directory *isolinux* and / or to rename *isolinux.cfg* to *syslinux.cfg*. Then, the partition can be chainloaded from syslinux on partition 1.
+
 ## tested with
 
 ### working with **memdisk method**
