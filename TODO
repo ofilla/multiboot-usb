@@ -1,6 +1,7 @@
- * in functions: $f -> "$f"
  * sed: not n times running but create command with n times '-e ..'
  * copy syslinux/(mbr|modules) from syslinux install, not from local copy
  * dynamic partition space (including 1st partition): PARTSIZE='max'
  * create config files for used methods only
  * install grub (instead of syslinux)?
+ * name partitions (from dd method)
+ * dd : oflag=sync conv=fsync status=progress|noxfer

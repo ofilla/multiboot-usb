@@ -3,10 +3,10 @@
 source config
 source check_preconditions.sh
 
-mount ${DEV}1 $MOUNTPOINT
+mount "${DEV}1" "$MOUNTPOINT"
 
 ##### reset syslinux.cfg
-cat <<EOF > $MOUNTPOINT/boot/syslinux/syslinux.cfg
+cat > "$MOUNTPOINT/boot/syslinux/syslinux.cfg" <<EOF
 PATH /boot/syslinux/modules/bios
 UI vesamenu.c32
 
@@ -19,4 +19,4 @@ INCLUDE $INCLUDEDIR/$menufilename_load
 INCLUDE $INCLUDEDIR/$menufilename_extract
 EOF
 
-umount ${DEV}1
+umount "${DEV}1"
