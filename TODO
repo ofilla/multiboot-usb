@@ -4,4 +4,3 @@
  * create config files for used methods only
  * install grub (instead of syslinux)?
  * name partitions (from dd method)
- * dd : oflag=sync conv=fsync status=progress|noxfer

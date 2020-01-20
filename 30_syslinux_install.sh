@@ -33,7 +33,7 @@ fi
 
 echo 'installing MBR'
 mount "${DEV}1" "$MOUNTPOINT"
-dd conv=notrunc bs=440 count=1 if=/mnt/boot/syslinux/mbr/mbr.bin of="$DEV"
+dd conv=notrunc bs=440 count=1 if=/mnt/boot/syslinux/mbr/mbr.bin of="$DEV" oflag=sync conv=fsync status=none
 umount -lf "${DEV}1"
 
 sync

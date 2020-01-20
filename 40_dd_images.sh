@@ -12,9 +12,10 @@ do
 	echo "making $iso partition bootable ..."
 	isohybrid --partok "$dd_isodir/$iso"
 	echo -n "copying $iso via dd ... "
-	dd if="$dd_isodir/$iso" of="$DEV$partnumber" bs=1M &> /dev/null || abort "dd failed" 4
+	dd if="$dd_isodir/$iso" of="$DEV$partnumber" bs=1M oflag=sync conv=fsync status=none
+	[[ $? -gt 0 ]] && abort "dd failed" 4  # abort if dd failed
 	sync
-	echo done
+	echo "done"
 	partnumber=$(($partnumber + 1))
 done
 
