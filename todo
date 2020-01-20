@@ -1,3 +1,0 @@
-* in functions: $f -> "$f"
-* sed: not n times running but create command with n times '-e ..'
-* copy syslinux/(mbr|modules) from syslinux install, not from local copy
