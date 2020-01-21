@@ -1,12 +1,6 @@
 #!/bin/bash
 
-if [[ -z "$ARGV" ]]; then
-	# if ARGV is unset: set to arguments
-	ARGV=( $@ )
-fi
-
 source config
-export ARGV
 
 for file in $(ls ??_*.sh); do
 	echo "============ start: $file"
