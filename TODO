@@ -1,4 +1,6 @@
- * sed: not n times running but create command with n times '-e ..'
+ * extracting method:
+ 	* fix (global) paths
+ 	* fix menu entries (extracted_images.cfg)
  * copy syslinux/(mbr|modules) from syslinux install, not from local copy
  * dynamic partition space (including 1st partition): PARTSIZE='max'
  * create config files for used methods only

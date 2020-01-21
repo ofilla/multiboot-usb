@@ -60,41 +60,50 @@ function manipulate_config_file() {
 
 function write_keywords_uppercase() {
 	f="$1"
-	for s in ui path default label kernel append include localboot \
+	
+	sed_cmd=""
+	for s in ui path default label kernel initrd append include localboot \
 		'menu begin' 'menu end' 'menu title' 'menu hide' 'menu color' \
 		menu 'text help' endtext config
-	do
-		sed -i "s/^$s /${s^^} /g" "$f"
-		sed -i "s/ $s / ${s^^} /g" "$f"
-		sed -i "s/\t$s /\t${s^^} /g" "$f"
+	do # FIXME
+		sed_cmd="$sed_cmd -e 's/^$s /${s^^} /g'"
+		sed_cmd="$sed_cmd -e 's/ $s / ${s^^} /g'"
+		sed_cmd="$sed_cmd -e 's/\t$s /\t${s^^} /g'"
 	done
 	for s in 'text help' endtext
 	do
-		sed -i "s/^$s$/${s^^}/g" "$f"
-		sed -i "s/ $s$/ ${s^^}/g" "$f"
-		sed -i "s/\t$s$/\t${s^^}/g" "$f"
+		sed_cmd="$sed_cmd -e 's/^$s$/${s^^}/g'"
+		sed_cmd="$sed_cmd -e 's/ $s$/ ${s^^}/g'"
+		sed_cmd="$sed_cmd -e 's/\t$s$/\t${s^^}/g'"
 	done
+
+	echo "$sed_cmd" "$f" | xargs sed -i
 }
 
 function fix_paths_for_include() {
 	f="$1"
 	local_cfgpath="$(sed "s!^$ROOTDIR/!!g" <<< "$EXTRACTED_ISODIR/$CFGPATH")"
 
+	sed_cmd=""
 	# fix locale paths
 	if [[ -n "$local_cfgpath" ]]
 	then
-		for param in INCLUDE UI PATH KERNEL CONFIG gfxboot 'MENU BACKGROUND'
+		for param in INCLUDE UI PATH KERNEL INITRD CONFIG gfxboot 'MENU BACKGROUND'
 		do
 			# convert global to local path
-			sed -i "s!$param !$param $local_cfgpath/!g" "$f"
+			sed_cmd="$sed_cmd -e 's!$param /!$param /$local_cfgpath/!g'"
+			sed_cmd="$sed_cmd -e 's!$param [^/]!$param $local_cfgpath/!g'"
 		done
 	fi
 	
 	# fix absolute paths
-	for param in INCLUDE UI PATH KERNEL CONFIG gfxboot
+	for param in INCLUDE UI PATH KERNEL INITRD CONFIG gfxboot
 	do
 		# convert global to local path
-		sed -i "s!$param $local_cfgpath//!$param !g" "$f"
+		sed_cmd="$sed_cmd -e 's!$param /!$param $EXTRACTED_ISODIR/!g'"
 	done
-	sed -i 's!initrd=/!initrd=!g' "$f"
+
+	sed_cmd="$sed_cmd -e 's!initrd=/!initrd=!g'"
+
+	echo "$sed_cmd" "$f" | xargs sed -i
 }
