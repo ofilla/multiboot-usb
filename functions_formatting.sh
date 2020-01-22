@@ -32,6 +32,8 @@ function create_last_partition() {
 
 	echo -e "creating partition $partnumber: \t full free space \t for $label"
 	sgdisk $device -N $partnumber -c $partnumber:"$label" > /dev/null
+	dd if=/dev/zero of=$device$partnumber bs=1 count=440 conv=fsync status=none
+
 	partnumber="$(($partnumber + 1))"
 }
 
