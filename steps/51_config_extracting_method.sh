@@ -1,9 +1,3 @@
-#!/bin/bash
-
-source config
-source check_preconditions.sh
-source functions_extracting.sh
-
 mount "${DEV}1" "$MOUNTPOINT"
 
 echo 'reset menufile for extracted images'

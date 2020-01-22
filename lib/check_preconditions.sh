@@ -1,7 +1,3 @@
-#!/bin/bash
-
-source config
-
 if [[ "$DEV" == "" ]]; then
 	echo "E: no destination device set" >&2
 	exit 1

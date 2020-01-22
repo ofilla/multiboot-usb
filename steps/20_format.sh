@@ -1,9 +1,3 @@
-#!/bin/bash
-
-source config
-source functions_formatting.sh
-source check_preconditions.sh
-
 # unmounting
 echo "unmounting $DEV ..."
 umount -lf "${DEV}"* 2> /dev/null

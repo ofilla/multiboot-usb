@@ -9,9 +9,17 @@ if [[ -n $1 ]]; then
 	fi
 fi
 
+
 source config
 
-for file in $(ls ??_*.sh); do
+for file in lib/*.sh
+do
+	source "$file"
+done
+
+
+for file in steps/??_*.sh
+do
 	echo "start: $file"
 	echo
 	source "$file"

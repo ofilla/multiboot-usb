@@ -1,8 +1,3 @@
-#!/bin/bash
-
-source config
-source check_preconditions.sh
-
 umount "${DEV}1" 2> /dev/null
 mkdir -p "$iso_mountpoint"
 mount "${DEV}1" "$MOUNTPOINT"

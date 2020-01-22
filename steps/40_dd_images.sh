@@ -1,10 +1,3 @@
-#!/bin/bash
-
-source config
-source check_preconditions.sh
-source functions_formatting.sh
-
-partnumber=2
 umount "$DEV"* 2> /dev/null
 
 for iso in $(ls "$dd_isodir")

@@ -1,5 +1,3 @@
-source config
-
 CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
 menufile="$CONFIGDIR/$menufilename_extract"
 
