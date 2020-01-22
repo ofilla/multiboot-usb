@@ -1,6 +1,3 @@
-FIXME
-	Partition for 12mb iso far to big (512M)
-
  * install grub (instead of syslinux)?
  	* left to adapt:
 	 	40_*

@@ -7,6 +7,7 @@ echo "repartitioning device ... "
 
 echo 're-creating partition table'
 sgdisk $DEV --zap-all > /dev/null
+dd if=/dev/zero of=$DEV bs=1K count=128 oflag=sync conv=fsync status=none
 
 if [[ "$GRUB_PARTITION" == "1" ]]; then
 	create_partition "$DEV" "$GRUB_PARTSIZE" "$GRUB_LABEL"
@@ -35,5 +36,6 @@ for iso in $dd_isodir/*
 do
 	name="${iso##*/}"
 	name="${name%.iso}"
+	size=$(du -h "$iso")
 	create_partition $DEV $size "$name"
 done
