@@ -8,60 +8,33 @@ source check_preconditions.sh
 echo "unmounting $DEV ..."
 umount -lf "${DEV}"* 2> /dev/null
 
-# convert partsize into MB
-if [[ "$PARTSIZE" == *"G" ]]; then
-	# GB
-	SIZE="$(sed 's/G$//' <<< "$PARTSIZE")"
-	SIZE="$(( $SIZE * 1024 ))"
-elif [[ "$PARTSIZE" == *"M" ]]; then
-	# MB
-	SIZE="$(sed 's/M$//' <<< "$PARTSIZE")"
-else
-	echo "E: cannot understand configuration: PARTSIZE=$PARTSIZE" >&2
-	exit 3
-fi
-
 
 echo "repartitioning device ... "
 
 echo 're-creating partition table'
-gdisk "$DEV" > /dev/null <<EOF
-o
-y
+sgdisk $DEV --zap-all > /dev/null
 
-w
-y
-EOF
+if [[ "$GRUB_PARTITION" == "1" ]]; then
+	create_partition "$DEV" "$GRUB_PARTSIZE" "$GRUB_LABEL"
+	echo "creating hybrid GPT/MBR ..."
+	sgdisk $DEV -h 1 > /dev/null
+elif [[ "$GRUB_PARTITION" == "2" ]]; then
+	create_partition "$DEV" "$DATA_PARTSIZE" "$DATA_LABEL"
+	create_partition "$DEV" "$GRUB_PARTSIZE" "$GRUB_LABEL"
+	echo "creating hybrid GPT/MBR ..."
+	sgdisk $DEV -h 1,2 > /dev/null
+else
+	abort "E: GRUB_PARTITION=$GRUB_PARTITION not supported" 3
+fi
 
-create_partition "$DEV" "$SIZE" "$LABEL"
-
-
-echo 'setting flag to partiton: legacy BIOS bootable'
-gdisk "$DEV" > /dev/null <<EOF
-x
-a
-2
-
-w
-y
-EOF
+echo "setting flag to partiton $GRUB_PARTITION: legacy BIOS bootable"
+sgdisk $DEV -A $GRUB_PARTITION:set:2	 > /dev/null # bios bootable
+sgdisk $DEV -A $GRUB_PARTITION:set:63	 > /dev/null # no automount
 
 # create partitions for iso images to dd to
-DD_ISOS=$(ls "$dd_isodir")
-for iso in $DD_ISOS
+for iso in $dd_isodir/*
 do
-	create_partition "$DEV" $(du -m "$dd_isodir/$iso") "${iso##*/}"
+	name="${iso##*/}"
+	name="${name%.iso}"
+	create_partition $DEV $size "$name"
 done
-
-
-echo "creating hybrid GPT/MBR ..."
-gdisk "$DEV" > /dev/null <<EOF
-r
-h
-1
-y
-
-n
-w
-y
-EOF

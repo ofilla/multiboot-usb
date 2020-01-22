@@ -3,9 +3,9 @@
 source config
 
 for file in $(ls ??_*.sh); do
-	echo "============ start: $file"
+	echo "start: $file"
+	echo
 	source "$file"
-	echo "============ finished: $file"
 done
 
 if [[ "$FS" == *"fat" ]]; then
@@ -16,9 +16,9 @@ else
 	CHMOD="chmod o+r"
 fi
 
-mount "${DEV}1" "$MOUNTPOINT"
+mount $GRUBDEV "$MOUNTPOINT"
 find "$MOUNTPOINT" -type f -print0 | xargs -0 $CHMOD "$MOUNTPOINT/"*
 find "$MOUNTPOINT" -type d -print0 | xargs -0 chmod o+x
-umount "$MOUNTPOINT"
+umount $GRUBDEV
 
 echo "all done"

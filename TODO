@@ -5,3 +5,4 @@
  * extracting method:
  	* fix (global) paths
  	* fix menu entries (extracted_images.cfg)
+ * use mostly bash features (instead of e.g. =$(sed ...) )
