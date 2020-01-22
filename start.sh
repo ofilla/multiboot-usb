@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [[ -n $1 ]]; then
+	if [[ $1 == /dev/*[^0-9] ]]; then
+		MULTIBOOT_DEV=$1
+	else
+		echo "invalid destination device" >&2
+		exit 1
+	fi
+fi
+
 source config
 
 for file in $(ls ??_*.sh); do
