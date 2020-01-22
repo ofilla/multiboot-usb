@@ -10,7 +10,6 @@ FORCE=${MULTIBOOT_FORCE:-0} # set FORCE=1: no safety check before formatting
 GRUB_PARTITION=${MULTIBOOT_GRUB_PARTITION:-2}  # must be 1 or 2
 GRUB_PARTSIZE=${MULTIBOOT_GRUB_PARTSIZE:-512M}
 GRUB_LABEL=${MULTIBOOT_GRUB_LABEL:-boot}
-GRUB_FS=${MULTIBOOT_GRUB_FS:-ext2}  # FAT is not supported
 GRUBDEV="${DEV}$GRUB_PARTITION"  # do not change this line!
 
 # data partition

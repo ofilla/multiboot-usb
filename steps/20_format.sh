@@ -22,8 +22,13 @@ else
 fi
 
 echo "setting flag to partiton $GRUB_PARTITION: legacy BIOS bootable"
-sgdisk $DEV -A $GRUB_PARTITION:set:2	 > /dev/null # bios bootable
-sgdisk $DEV -A $GRUB_PARTITION:set:63	 > /dev/null # no automount
+# flag 2: bios bootable
+# flag 63: no automount
+sgdisk $DEV -A $GRUB_PARTITION:set:2 \
+	 -A $GRUB_PARTITION:set:63 \
+	 -t $GRUB_PARTITION:ef02 \
+	 > /dev/null
+
 
 # create partitions for iso images to dd to
 for iso in $dd_isodir/*
