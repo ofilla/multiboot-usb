@@ -4,19 +4,15 @@ FORCE=${MULTIBOOT_FORCE:-0} # set FORCE=1: no safety check before formatting
 
 
 # boot partition
-# PARTSIZE may be 'max' to use the rest of the device
+# GRUB_PARTSIZE may be 'max' to use the rest of the device
 #   (unless dd_method shall be used)
-# if GRUB_PARTITION = 2, the first partition will be a data partition
-GRUB_PARTITION=${MULTIBOOT_GRUB_PARTITION:-2}  # must be 1 or 2
 GRUB_PARTSIZE=${MULTIBOOT_GRUB_PARTSIZE:-512M}
-GRUB_LABEL=${MULTIBOOT_GRUB_LABEL:-boot}
-GRUBDEV="${DEV}$GRUB_PARTITION"  # do not change this line!
+GRUB_LABEL=${MULTIBOOT_GRUB_LABEL:-grub}
+GRUBDEV="${DEV}4"  # do not change this line!
 
 # data partition
-# only used if GRUB_PARTITION=2
 DATA_PARTSIZE=${MULTIBOOT_DATA_PARTSIZE:-512M} # size of first partition, can be M or G
 DATA_LABEL=${MULTIBOOT_DATA_LABEL:-USB}
-DATA_FS=${MULTIBOOT_DATA_FS:-vfat} # file system, mkfs.$FS must exist!
 
 
 
