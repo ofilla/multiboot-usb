@@ -1,4 +1,4 @@
-mount "${DEV}1" "$MOUNTPOINT"
+mount "${DEV}1" "$MOUNTPOINT" || exit $?
 
 echo 'reset menufile for extracted images'
 echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg" > "$menufile"
@@ -18,4 +18,4 @@ do
 done
 
 sync
-umount -l "${DEV}1"
+umount -l "${DEV}1" || exit $?

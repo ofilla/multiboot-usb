@@ -1,6 +1,6 @@
-umount "${DEV}1" 2> /dev/null
+umount "${DEV}1" || exit $?
 mkdir -p "$iso_mountpoint"
-mount "${DEV}1" "$MOUNTPOINT"
+mount "${DEV}1" || exit $?
 
 for iso in $(ls "$extracted_isodir/"*.iso 2> /dev/null | sed "s!^$extracted_isodir/!!")
 do
@@ -19,7 +19,7 @@ do
 	
 	mkdir -p "$dest"
 	
-	mount -t iso9660 -o ro "$extracted_isodir/$iso" "$iso_mountpoint"
+	mount -t iso9660 -o ro "$extracted_isodir/$iso" "$iso_mountpoint" || exit $?
 	
 	echo "  copying ..."
 	cp -Pr "$iso_mountpoint/"* "$dest/"
@@ -28,11 +28,11 @@ do
 		cp -Pr "$iso_mountpoint"/.??* "$dest/"
 	fi
 	
-	umount -lf "$iso_mountpoint"
+	umount -lf "$iso_mountpoint" || exit $?
 	echo " copied to $dirname"
 done
 
 rmdir "$iso_mountpoint"
 
 sync
-umount -l "${DEV}1"
+umount -l "${DEV}1" || exit $?

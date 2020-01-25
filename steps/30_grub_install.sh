@@ -4,9 +4,9 @@ mkfs.vfat -F 32 -n EFI ${DEV}3 > /dev/null
 mkfs.ext4 -q -F -L "$GRUB_LABEL" $GRUBDEV > /dev/null
 
 echo "installing grub"
-mount $GRUBDEV "$MOUNTPOINT" || exit 1
+mount $GRUBDEV "$MOUNTPOINT" || exit $?
 mkdir -p "$MOUNTPOINT"/boot/efi
-mount ${DEV}3 "$MOUNTPOINT"/boot/efi || exit 1
+mount ${DEV}3 "$MOUNTPOINT"/boot/efi || exit $?
 
 # EFI grub
 grub-install \
@@ -26,6 +26,6 @@ grub-install \
 touch "$MOUNTPOINT/boot/grub/grub.cfg"
 find "$MOUNTPOINT"/boot/efi -type f -print0 | xargs -0 fatattr +hsr -a
 
-umount ${DEV}3
+umount ${DEV}3 || exit $?
 rmdir "$MOUNTPOINT"/boot/efi
-umount $GRUBDEV
+umount $GRUBDEV || exit $?

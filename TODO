@@ -1,5 +1,4 @@
  * install grub (instead of syslinux)?
- 	* abort with failing (u)mount
  	* left to adapt:
 	 	40_*
 	 	5*

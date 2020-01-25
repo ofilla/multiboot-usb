@@ -26,10 +26,10 @@ do
 	echo
 done
 
-mount $GRUBDEV "$MOUNTPOINT"
+mount $GRUBDEV "$MOUNTPOINT" || exit $?
 find "$MOUNTPOINT" -type f -print0 | xargs -0 chmod o+r
 find "$MOUNTPOINT" -type d -print0 | xargs -0 chmod o+rx
-umount -rl "$MOUNTPOINT"
+umount -rl "$MOUNTPOINT" || exit $?
 
 partprobe
 echo "all done"

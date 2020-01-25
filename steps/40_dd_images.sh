@@ -1,4 +1,4 @@
-umount "$DEV"* 2> /dev/null
+umount "$DEV"* || exit $?
 
 for iso in $(ls "$dd_isodir")
 do
@@ -12,7 +12,7 @@ do
 	partnumber=$(($partnumber + 1))
 done
 
-umount "$DEV"* 2> /dev/null
+umount "$DEV"* || exit $?
 
 # re-create hybrid mbr
 gdisk "$DEV" > /dev/null <<EOF

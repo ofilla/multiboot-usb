@@ -2,7 +2,7 @@ CONFIGDIR="$MOUNTPOINT$INCLUDEDIR"
 ISOPATH="$MOUNTPOINT$ISODIR"
 menufile="$CONFIGDIR/$menufilename_load"
 
-mount "${DEV}1" "$MOUNTPOINT"
+mount "${DEV}1" "$MOUNTPOINT" || exit $?
 
 echo 'reset menufile for loaded isos'
 echo -e "INCLUDE $INCLUDEDIR/stdmenu.cfg" > "$menufile"
@@ -35,4 +35,4 @@ echo "done creating $menufile"
 
 ##### unmount
 sync
-umount -l "${DEV}1"
+umount -l "${DEV}1" || exit $?

@@ -1,4 +1,4 @@
-mount "${DEV}1" "$MOUNTPOINT"
+mount "${DEV}1" "$MOUNTPOINT" || exit $?
 
 ##### reset syslinux.cfg
 cat > "$MOUNTPOINT/boot/syslinux/syslinux.cfg" <<EOF
@@ -14,4 +14,4 @@ INCLUDE $INCLUDEDIR/$menufilename_load
 INCLUDE $INCLUDEDIR/$menufilename_extract
 EOF
 
-umount "${DEV}1"
+umount "${DEV}1" || exit $?
